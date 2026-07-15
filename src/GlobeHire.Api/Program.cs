@@ -2,6 +2,7 @@ using GlobeHire.Api.Errors;
 using GlobeHire.Api.Employments;
 using GlobeHire.Api.EmploymentLifecycle;
 using GlobeHire.Api.Contractors;
+using GlobeHire.Api.Compliance;
 using GlobeHire.Api.BulkData;
 using GlobeHire.Api.HireCases;
 using GlobeHire.Api.Integrations;
@@ -65,6 +66,7 @@ app.MapContractorEndpoints();
 app.MapEmploymentLifecycleEndpoints();
 app.MapIntegrationEndpoints();
 app.MapBulkDataEndpoints();
+app.MapComplianceEndpoints();
 
 app.Run();
 

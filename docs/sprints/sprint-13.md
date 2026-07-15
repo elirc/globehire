@@ -18,4 +18,14 @@ Timeline/deadline tests, case API, notification port, ADR, and effective-policy 
 
 ## Exercises
 
+## Delivered evidence
+
+- Compliance cases require versionable evidence types and reject missing or expired evidence.
+- Review readiness and expert approval remain separate transitions.
+- Domain records references and expiry metadata, not sensitive document bytes.
+- Country policies now use half-open `[from, to)` ranges.
+- An adjacent-boundary regression test proves one and only one policy applies.
+
+## Exercises
+
 Handle a policy change while a case is open. Define whether a deadline uses local calendar days or elapsed duration.

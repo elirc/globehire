@@ -19,11 +19,11 @@ public sealed record CountryEmploymentPolicy
             throw new BusinessRuleViolationException("country_policy.id_required", "Policy ID is required.");
         }
 
-        if (effectiveTo < effectiveFrom)
+        if (effectiveTo <= effectiveFrom)
         {
             throw new BusinessRuleViolationException(
                 "country_policy.date_range_invalid",
-                "Policy end date cannot precede its start date.");
+                "Policy exclusive end date must follow its start date.");
         }
 
         if (employerContributionRate is < 0 or > 1)
@@ -67,5 +67,5 @@ public sealed record CountryEmploymentPolicy
     public IReadOnlyList<string> Assumptions { get; }
 
     public bool AppliesOn(DateOnly date) =>
-        date >= EffectiveFrom && (EffectiveTo is null || date <= EffectiveTo.Value);
+        date >= EffectiveFrom && (EffectiveTo is null || date < EffectiveTo.Value);
 }
