@@ -1,0 +1,13 @@
+bin/
+obj/
+.vs/
+.idea/
+TestResults/
+coverage/
+*.user
+*.suo
+*.nupkg
+appsettings.Local.json
+.env
+.course-ops/
+FLAW-LEDGER.local.md

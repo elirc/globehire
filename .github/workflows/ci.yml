@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+      - name: Validate governance bootstrap or .NET solution
+        shell: bash
+        run: |
+          if [ -f GlobeHire.slnx ]; then
+            dotnet restore GlobeHire.slnx --locked-mode
+            dotnet format GlobeHire.slnx --verify-no-changes --no-restore
+            dotnet build GlobeHire.slnx --configuration Release --no-restore
+            dotnet test GlobeHire.slnx --configuration Release --no-build
+            dotnet list GlobeHire.slnx package --vulnerable --include-transitive
+          else
+            test -f README.md
+            test -f LEARNER-GUIDE.md
+            test -f docs/curriculum/SPEC.md
+          fi
+
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

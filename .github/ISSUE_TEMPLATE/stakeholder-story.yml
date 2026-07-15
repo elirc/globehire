@@ -1,0 +1,26 @@
+name: Stakeholder story
+description: A business outcome that anchors a sprint
+title: "[Story] "
+labels: ["product"]
+body:
+  - type: textarea
+    id: persona
+    attributes:
+      label: Persona and outcome
+      description: As a..., I need..., so that...
+    validations:
+      required: true
+  - type: textarea
+    id: rules
+    attributes:
+      label: Business rules
+      description: State the invariants, policy dates, currencies, permissions, and failure behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance evidence
+      description: Describe observable API behavior and tests.
+    validations:
+      required: true

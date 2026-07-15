@@ -1,0 +1,25 @@
+name: Engineering task
+description: A bounded implementation or evidence task
+title: "[Task] "
+labels: ["engineering"]
+body:
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+    validations:
+      required: true
+  - type: textarea
+    id: boundary
+    attributes:
+      label: Boundary and constraints
+      description: Name the module, API contract, integration seam, and non-goals.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: List the tests and checks that prove completion.
+    validations:
+      required: true
