@@ -47,6 +47,11 @@ builder.Services.AddScoped<ActivateEmploymentHandler>();
 var app = builder.Build();
 
 app.UseExceptionHandler();
+app.Use(async (context, next) =>
+{
+    context.Response.Headers["X-Trace-Id"] = context.TraceIdentifier;
+    await next(context).ConfigureAwait(false);
+});
 
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Testing"))
 {
@@ -55,6 +60,14 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Testing"))
 
 app.MapGet("/health/live", () => Results.Ok(new { status = "healthy" }))
     .WithName("Liveness")
+    .ExcludeFromDescription();
+app.MapGet("/health/ready", () => Results.Ok(new
+    {
+        status = "ready",
+        storage = "in-memory",
+        durable = false,
+    }))
+    .WithName("Readiness")
     .ExcludeFromDescription();
 app.MapWorkforcePlanEndpoints();
 app.MapHireCaseEndpoints();

@@ -91,6 +91,29 @@ public sealed class WorkforcePlanApiTests : IClassFixture<WebApplicationFactory<
         Assert.Contains("/api/v1/clients/{clientId}/offers", document, StringComparison.Ordinal);
     }
 
+    [Theory]
+    [InlineData("/health/live", "healthy")]
+    [InlineData("/health/ready", "ready")]
+    public async Task HealthEndpoints_ReturnStatusAndTraceHeader(string path, string expectedStatus)
+    {
+        var response = await _client.GetAsync(path);
+        using var payload = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(expectedStatus, payload.RootElement.GetProperty("status").GetString());
+        Assert.True(response.Headers.Contains("X-Trace-Id"));
+    }
+
+    [Fact]
+    public async Task Readiness_StatesThatStorageIsNotDurable()
+    {
+        var response = await _client.GetAsync("/health/ready");
+        using var payload = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+
+        Assert.False(payload.RootElement.GetProperty("durable").GetBoolean());
+        Assert.Equal("in-memory", payload.RootElement.GetProperty("storage").GetString());
+    }
+
     private static HttpRequestMessage CreateRequest(string clientId, string idempotencyKey)
     {
         var request = new HttpRequestMessage(
