@@ -37,6 +37,23 @@ GlobeHire starts without microservices, MediatR, AutoMapper, a generic repositor
 
 Read [the learner guide](LEARNER-GUIDE.md), [product and curriculum specification](docs/curriculum/SPEC.md), and [contribution workflow](CONTRIBUTING.md) before Sprint 1.
 
+## Run Sprint 1
+
+The first vertical slice requires the .NET 10 SDK pinned in `global.json`.
+
+```powershell
+dotnet restore GlobeHire.slnx --locked-mode
+dotnet run --project src/GlobeHire.Api
+```
+
+Use [the HTTP examples](src/GlobeHire.Api/GlobeHire.Api.http) to create and replay a workforce plan or inspect `/openapi/v1.json`. Then run the complete suite:
+
+```powershell
+dotnet test GlobeHire.slnx
+```
+
+See [the testing guide](TESTREADME.md), [Sprint 1 evidence](docs/sprints/sprint-01.md), and [ADR 0001](docs/adr/ADR-0001-modular-monolith-and-explicit-boundaries.md) for the reasoning behind the implementation.
+
 ## Attribution and limits
 
 Pebl and Velocity Global are trademarks of their owners. GlobeHire is an independent educational project and is not affiliated with or endorsed by them. Country rules, payroll calculations, tax treatment, benefits, immigration, and legal templates in this repository are fictional teaching fixtures—not legal, tax, payroll, or employment advice.
