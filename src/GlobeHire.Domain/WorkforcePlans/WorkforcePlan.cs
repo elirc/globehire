@@ -54,7 +54,7 @@ public sealed class WorkforcePlan
         CountryCode country,
         DateOnly proposedStartDate,
         Money annualCompensation,
-        Money monthlyServiceFee,
+        CountryEmploymentPolicy policy,
         DateOnly today,
         DateTimeOffset now)
     {
@@ -81,7 +81,14 @@ public sealed class WorkforcePlan
                 "Proposed start date cannot be in the past.");
         }
 
-        var quote = PlanQuote.Estimate(annualCompensation, monthlyServiceFee);
+        if (!policy.AppliesOn(proposedStartDate) || policy.Country != country)
+        {
+            throw new BusinessRuleViolationException(
+                "country_policy.not_applicable",
+                "The selected employment policy does not apply to the proposed hire.");
+        }
+
+        var quote = PlanQuote.Estimate(annualCompensation, policy);
         return new WorkforcePlan(
             id,
             clientId,

@@ -20,18 +20,18 @@ public sealed class CreateWorkforcePlanHandler
     private readonly IWorkforcePlanRepository _repository;
     private readonly IClock _clock;
     private readonly IIdGenerator _idGenerator;
-    private readonly WorkforcePlanPricingOptions _pricing;
+    private readonly ICountryPolicyRepository _countryPolicies;
 
     public CreateWorkforcePlanHandler(
         IWorkforcePlanRepository repository,
         IClock clock,
         IIdGenerator idGenerator,
-        WorkforcePlanPricingOptions pricing)
+        ICountryPolicyRepository countryPolicies)
     {
         _repository = repository;
         _clock = clock;
         _idGenerator = idGenerator;
-        _pricing = pricing;
+        _countryPolicies = countryPolicies;
     }
 
     public async Task<CreateWorkforcePlanResult> HandleAsync(
@@ -42,15 +42,18 @@ public sealed class CreateWorkforcePlanHandler
 
         var clientId = ClientId.Parse(command.ClientId);
         var annualCompensation = Money.Of(command.AnnualCompensation, command.Currency);
+        var country = CountryCode.Parse(command.CountryCode);
+        var policies = await _countryPolicies.ListAsync(country, cancellationToken).ConfigureAwait(false);
+        var policy = CountryPolicySelector.Select(country, command.ProposedStartDate, policies);
         var plan = WorkforcePlan.Create(
             WorkforcePlanId.New(_idGenerator.NewId()),
             clientId,
             command.IdempotencyKey,
             command.RoleTitle,
-            CountryCode.Parse(command.CountryCode),
+            country,
             command.ProposedStartDate,
             annualCompensation,
-            Money.Of(_pricing.MonthlyServiceFee, annualCompensation.Currency),
+            policy,
             _clock.Today,
             _clock.UtcNow);
 

@@ -14,3 +14,10 @@ public interface IWorkforcePlanRepository
 }
 
 public sealed record StoredWorkforcePlan(WorkforcePlan Plan, bool WasAdded);
+
+public interface ICountryPolicyRepository
+{
+    Task<IReadOnlyList<CountryEmploymentPolicy>> ListAsync(
+        CountryCode country,
+        CancellationToken cancellationToken);
+}

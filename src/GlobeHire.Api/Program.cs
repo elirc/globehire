@@ -1,4 +1,3 @@
-using System.Globalization;
 using GlobeHire.Api.Errors;
 using GlobeHire.Api.WorkforcePlans;
 using GlobeHire.Application.Abstractions;
@@ -18,10 +17,7 @@ builder.Services.AddSingleton<IIdGenerator, GuidIdGenerator>();
 builder.Services.AddSingleton<InMemoryWorkforcePlanRepository>();
 builder.Services.AddSingleton<IWorkforcePlanRepository>(services =>
     services.GetRequiredService<InMemoryWorkforcePlanRepository>());
-builder.Services.AddSingleton(_ => new WorkforcePlanPricingOptions
-{
-    MonthlyServiceFee = ReadMonthlyServiceFee(builder.Configuration),
-});
+builder.Services.AddSingleton<ICountryPolicyRepository, InMemoryCountryPolicyRepository>();
 builder.Services.AddScoped<CreateWorkforcePlanHandler>();
 builder.Services.AddScoped<GetWorkforcePlanHandler>();
 
@@ -40,13 +36,5 @@ app.MapGet("/health/live", () => Results.Ok(new { status = "healthy" }))
 app.MapWorkforcePlanEndpoints();
 
 app.Run();
-
-static decimal ReadMonthlyServiceFee(IConfiguration configuration)
-{
-    var configured = configuration[$"{WorkforcePlanPricingOptions.SectionName}:MonthlyServiceFee"];
-    return decimal.TryParse(configured, NumberStyles.Number, CultureInfo.InvariantCulture, out var value)
-        ? value
-        : 500m;
-}
 
 public partial class Program;

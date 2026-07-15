@@ -15,9 +15,12 @@ internal static class WorkforcePlanContractMapper
             plan.ProposedStartDate,
             plan.AnnualCompensation.ToResponse(),
             new PlanQuoteResponse(
+                plan.Quote.PolicyId,
                 plan.Quote.MonthlySalary.ToResponse(),
+                plan.Quote.MonthlyEmployerContributions.ToResponse(),
                 plan.Quote.MonthlyServiceFee.ToResponse(),
-                plan.Quote.EstimatedMonthlyTotal.ToResponse()),
+                plan.Quote.EstimatedMonthlyTotal.ToResponse(),
+                plan.Quote.Assumptions),
             plan.Version,
             plan.CreatedAt);
 

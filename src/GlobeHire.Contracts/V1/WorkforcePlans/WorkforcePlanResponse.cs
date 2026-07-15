@@ -12,8 +12,11 @@ public sealed record WorkforcePlanResponse(
     DateTimeOffset CreatedAt);
 
 public sealed record PlanQuoteResponse(
+    string PolicyId,
     MoneyResponse MonthlySalary,
+    MoneyResponse MonthlyEmployerContributions,
     MoneyResponse MonthlyServiceFee,
-    MoneyResponse EstimatedMonthlyTotal);
+    MoneyResponse EstimatedMonthlyTotal,
+    IReadOnlyList<string> Assumptions);
 
 public sealed record MoneyResponse(decimal Amount, string Currency);
