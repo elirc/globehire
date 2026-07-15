@@ -13,9 +13,23 @@ public sealed class CountryPolicySelectorTests
         var selected = CountryPolicySelector.Select(
             CountryCode.Parse("US"),
             new DateOnly(2027, 1, 1),
-            [Policy("US-2026", new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31)), expected]);
+            [Policy("US-2026", new DateOnly(2026, 1, 1), new DateOnly(2027, 1, 1)), expected]);
 
         Assert.Same(expected, selected);
+    }
+
+    [Fact]
+    public void Select_OnAdjacentBoundary_SelectsNewPolicyWithoutOverlap()
+    {
+        var oldPolicy = Policy("US-2026", new DateOnly(2026, 1, 1), new DateOnly(2027, 1, 1));
+        var newPolicy = Policy("US-2027", new DateOnly(2027, 1, 1), new DateOnly(2028, 1, 1));
+
+        var selected = CountryPolicySelector.Select(
+            CountryCode.Parse("US"),
+            new DateOnly(2027, 1, 1),
+            [oldPolicy, newPolicy]);
+
+        Assert.Same(newPolicy, selected);
     }
 
     [Fact]
