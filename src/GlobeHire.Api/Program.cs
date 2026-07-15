@@ -2,6 +2,7 @@ using GlobeHire.Api.Errors;
 using GlobeHire.Api.Employments;
 using GlobeHire.Api.HireCases;
 using GlobeHire.Api.Offers;
+using GlobeHire.Api.Payroll;
 using GlobeHire.Api.WorkforcePlans;
 using GlobeHire.Application.Abstractions;
 using GlobeHire.Application.Employments;
@@ -53,6 +54,7 @@ app.MapWorkforcePlanEndpoints();
 app.MapHireCaseEndpoints();
 app.MapOfferEndpoints();
 app.MapEmploymentEndpoints();
+app.MapPayrollEndpoints();
 
 app.Run();
 

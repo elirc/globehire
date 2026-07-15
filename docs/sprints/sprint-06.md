@@ -18,4 +18,13 @@ Calculation property tests, payroll endpoints, statement contract, ADR, and fina
 
 ## Exercises
 
+## Delivered evidence
+
+- Payroll previews calculate gross, deductions, employer contributions, and net with currency-safe money.
+- Statements reconcile gross to deductions plus net.
+- Periods reject duplicate statements, empty finalization, and changes after finalization.
+- The API exposes calculation inputs explicitly instead of hiding fictional rates.
+
+## Exercises
+
 Allocate a total across multiple lines without losing a cent. Add an adjustment run without mutating the closed statement.
