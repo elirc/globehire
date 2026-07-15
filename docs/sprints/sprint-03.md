@@ -19,3 +19,11 @@ Transition table tests, hire-case endpoints, audit contract, ADR, and aggregate 
 ## Exercises
 
 Add a cancelled-to-reopened policy. Explain which transitions belong in the aggregate and which belong in orchestration.
+
+## Delivered evidence
+
+- A hire case is opened only from a tenant-scoped workforce plan.
+- The aggregate owns candidate normalization, required onboarding tasks, legal transitions, and version increments.
+- Commands use `If-Match` ETags so stale writers fail instead of overwriting newer work.
+- Domain tests prove incomplete submission, successful progression, and rejection before stale mutation.
+- An API integration test executes the full plan-to-ready-for-review workflow.
