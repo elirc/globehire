@@ -3,6 +3,7 @@ using GlobeHire.Domain.Common;
 using GlobeHire.Domain.Payroll;
 
 namespace GlobeHire.Api.Payroll;
+
 internal static class PayrollEndpoints
 {
     public static IEndpointRouteBuilder MapPayrollEndpoints(this IEndpointRouteBuilder endpoints)
