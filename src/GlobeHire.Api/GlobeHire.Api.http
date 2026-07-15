@@ -1,0 +1,6 @@
+@GlobeHire.Api_HostAddress = http://localhost:5229
+
+GET {{GlobeHire.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

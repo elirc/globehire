@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/GlobeHire.Api/GlobeHire.Api.csproj" />
+    <Project Path="src/GlobeHire.Application/GlobeHire.Application.csproj" />
+    <Project Path="src/GlobeHire.Contracts/GlobeHire.Contracts.csproj" />
+    <Project Path="src/GlobeHire.Domain/GlobeHire.Domain.csproj" />
+    <Project Path="src/GlobeHire.Infrastructure/GlobeHire.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/GlobeHire.Api.Tests/GlobeHire.Api.Tests.csproj" />
+    <Project Path="tests/GlobeHire.Application.Tests/GlobeHire.Application.Tests.csproj" />
+    <Project Path="tests/GlobeHire.Architecture.Tests/GlobeHire.Architecture.Tests.csproj" />
+    <Project Path="tests/GlobeHire.Domain.Tests/GlobeHire.Domain.Tests.csproj" />
+  </Folder>
+</Solution>
