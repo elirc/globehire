@@ -114,7 +114,7 @@ public sealed class WebhookDelivery
         Status = statusCode is >= 200 and < 300 ? DeliveryStatus.Delivered : DeliveryStatus.Failed;
     }
 
-    public WebhookDelivery Retry(Guid retryId)
+    public WebhookDelivery Retry()
     {
         if (Status != DeliveryStatus.Failed)
         {
@@ -123,6 +123,6 @@ public sealed class WebhookDelivery
                 "Only failed deliveries can be retried.");
         }
 
-        return new WebhookDelivery(retryId, MessageId, SubscriptionId, Attempt + 1);
+        return new WebhookDelivery(Id, MessageId, SubscriptionId, Attempt + 1);
     }
 }

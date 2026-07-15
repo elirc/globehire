@@ -23,10 +23,11 @@ public sealed class IntegrationModelsTests
         var delivery = new WebhookDelivery(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
         delivery.RecordResponse(503);
 
-        var retry = delivery.Retry(Guid.NewGuid());
+        var retry = delivery.Retry();
 
         Assert.Equal(DeliveryStatus.Failed, delivery.Status);
         Assert.Equal(delivery.MessageId, retry.MessageId);
+        Assert.Equal(delivery.Id, retry.Id);
         Assert.Equal(2, retry.Attempt);
     }
 
