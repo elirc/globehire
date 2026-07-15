@@ -18,4 +18,15 @@ Five red/green arcs, security audit, compatibility report, performance evidence,
 
 ## Exercises
 
+## Delivered evidence
+
+- Largest-remainder money allocation reconciles every cent.
+- Half-open policy dates and tenant-bound lookups retain their Sprint 13/10 regressions.
+- Offer mutations execute atomically inside the repository adapter.
+- Concurrent writers with the same version yield one success and one conflict.
+- Webhook retries retain stable delivery and message identities while incrementing attempt.
+- The public flaw-harvest ledger links every planted defect to its owning fix and test.
+
+## Exercises
+
 Revert each fix and predict the failing evidence. Add one generated counterexample without weakening the domain model.

@@ -9,6 +9,11 @@ public interface IOfferRepository
 {
     Task AddAsync(EmploymentOffer offer, CancellationToken cancellationToken);
     Task<EmploymentOffer?> FindAsync(ClientId clientId, Guid id, CancellationToken cancellationToken);
+    Task<EmploymentOffer?> MutateAsync(
+        ClientId clientId,
+        Guid id,
+        Action<EmploymentOffer> mutation,
+        CancellationToken cancellationToken);
 }
 
 public sealed class OfferHandler(
@@ -33,16 +38,20 @@ public sealed class OfferHandler(
     public async Task<EmploymentOffer?> ApproveAsync(
         string clientId, Guid id, ApprovalRole role, string actorId, int version, CancellationToken cancellationToken)
     {
-        var offer = await offers.FindAsync(ClientId.Parse(clientId), id, cancellationToken).ConfigureAwait(false);
-        offer?.Approve(role, actorId, version, clock.UtcNow);
-        return offer;
+        return await offers.MutateAsync(
+            ClientId.Parse(clientId),
+            id,
+            offer => offer.Approve(role, actorId, version, clock.UtcNow),
+            cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<EmploymentOffer?> IssueAsync(
         string clientId, Guid id, string templateKey, int version, CancellationToken cancellationToken)
     {
-        var offer = await offers.FindAsync(ClientId.Parse(clientId), id, cancellationToken).ConfigureAwait(false);
-        offer?.IssueContract(ids.NewId(), templateKey, version, clock.UtcNow);
-        return offer;
+        return await offers.MutateAsync(
+            ClientId.Parse(clientId),
+            id,
+            offer => offer.IssueContract(ids.NewId(), templateKey, version, clock.UtcNow),
+            cancellationToken).ConfigureAwait(false);
     }
 }

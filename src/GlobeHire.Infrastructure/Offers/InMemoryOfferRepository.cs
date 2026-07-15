@@ -25,4 +25,24 @@ public sealed class InMemoryOfferRepository : IOfferRepository
             return Task.FromResult(offer);
         }
     }
+
+    public Task<EmploymentOffer?> MutateAsync(
+        ClientId clientId,
+        Guid id,
+        Action<EmploymentOffer> mutation,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(mutation);
+        cancellationToken.ThrowIfCancellationRequested();
+        lock (_gate)
+        {
+            if (!_offers.TryGetValue((clientId, id), out var offer))
+            {
+                return Task.FromResult<EmploymentOffer?>(null);
+            }
+
+            mutation(offer);
+            return Task.FromResult<EmploymentOffer?>(offer);
+        }
+    }
 }
