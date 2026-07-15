@@ -14,9 +14,9 @@ public sealed class ActivateEmploymentHandler(
     IOfferRepository offers, IEmploymentRepository employments, IIdGenerator ids, IClock clock)
 {
     public async Task<(Employment Employment, bool Created)> HandleAsync(
-        Guid offerId, string workerReference, DateOnly startDate, CancellationToken cancellationToken)
+        string clientId, Guid offerId, string workerReference, DateOnly startDate, CancellationToken cancellationToken)
     {
-        var offer = await offers.FindAsync(offerId, cancellationToken).ConfigureAwait(false)
+        var offer = await offers.FindAsync(ClientId.Parse(clientId), offerId, cancellationToken).ConfigureAwait(false)
             ?? throw new BusinessRuleViolationException("offer.not_found", "Offer was not found.");
         var employment = Employment.Activate(ids.NewId(), offer, workerReference, startDate, clock.Today, clock.UtcNow);
         var stored = await employments.AddOrGetAsync(employment, cancellationToken).ConfigureAwait(false);

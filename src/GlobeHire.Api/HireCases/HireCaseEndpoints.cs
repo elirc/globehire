@@ -35,16 +35,18 @@ internal static class HireCaseEndpoints
     }
 
     private static async Task<IResult> GetAsync(
+        string clientId,
         Guid id,
         ChangeHireCaseHandler handler,
         HttpContext context,
         CancellationToken cancellationToken)
     {
-        var hireCase = await handler.GetAsync(id, cancellationToken).ConfigureAwait(false);
+        var hireCase = await handler.GetAsync(clientId, id, cancellationToken).ConfigureAwait(false);
         return Respond(hireCase, context);
     }
 
     private static async Task<IResult> CompleteTaskAsync(
+        string clientId,
         Guid id,
         string taskCode,
         [FromHeader(Name = "If-Match")] string? ifMatch,
@@ -53,6 +55,7 @@ internal static class HireCaseEndpoints
         CancellationToken cancellationToken)
     {
         var hireCase = await handler.CompleteTaskAsync(
+            clientId,
             id,
             taskCode,
             ParseVersion(ifMatch),
@@ -61,13 +64,18 @@ internal static class HireCaseEndpoints
     }
 
     private static async Task<IResult> SubmitAsync(
+        string clientId,
         Guid id,
         [FromHeader(Name = "If-Match")] string? ifMatch,
         ChangeHireCaseHandler handler,
         HttpContext context,
         CancellationToken cancellationToken)
     {
-        var hireCase = await handler.SubmitAsync(id, ParseVersion(ifMatch), cancellationToken).ConfigureAwait(false);
+        var hireCase = await handler.SubmitAsync(
+            clientId,
+            id,
+            ParseVersion(ifMatch),
+            cancellationToken).ConfigureAwait(false);
         return Respond(hireCase, context);
     }
 

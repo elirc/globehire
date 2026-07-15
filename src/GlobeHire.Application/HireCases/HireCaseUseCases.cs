@@ -9,7 +9,7 @@ namespace GlobeHire.Application.HireCases;
 public interface IHireCaseRepository
 {
     Task AddAsync(HireCase hireCase, CancellationToken cancellationToken);
-    Task<HireCase?> FindAsync(Guid id, CancellationToken cancellationToken);
+    Task<HireCase?> FindAsync(ClientId clientId, Guid id, CancellationToken cancellationToken);
 }
 
 public sealed record OpenHireCaseCommand(
@@ -49,26 +49,28 @@ public sealed class OpenHireCaseHandler(
 public sealed class ChangeHireCaseHandler(IHireCaseRepository hireCases, IClock clock)
 {
     public async Task<HireCase?> CompleteTaskAsync(
+        string clientId,
         Guid id,
         string taskCode,
         int expectedVersion,
         CancellationToken cancellationToken)
     {
-        var hireCase = await hireCases.FindAsync(id, cancellationToken).ConfigureAwait(false);
+        var hireCase = await hireCases.FindAsync(ClientId.Parse(clientId), id, cancellationToken).ConfigureAwait(false);
         hireCase?.CompleteTask(taskCode, expectedVersion, clock.UtcNow);
         return hireCase;
     }
 
     public async Task<HireCase?> SubmitAsync(
+        string clientId,
         Guid id,
         int expectedVersion,
         CancellationToken cancellationToken)
     {
-        var hireCase = await hireCases.FindAsync(id, cancellationToken).ConfigureAwait(false);
+        var hireCase = await hireCases.FindAsync(ClientId.Parse(clientId), id, cancellationToken).ConfigureAwait(false);
         hireCase?.SubmitForReview(expectedVersion);
         return hireCase;
     }
 
-    public Task<HireCase?> GetAsync(Guid id, CancellationToken cancellationToken) =>
-        hireCases.FindAsync(id, cancellationToken);
+    public Task<HireCase?> GetAsync(string clientId, Guid id, CancellationToken cancellationToken) =>
+        hireCases.FindAsync(ClientId.Parse(clientId), id, cancellationToken);
 }

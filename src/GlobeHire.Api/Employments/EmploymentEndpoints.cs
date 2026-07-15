@@ -14,10 +14,15 @@ internal static class EmploymentEndpoints
     }
 
     private static async Task<IResult> ActivateAsync(
+        string clientId,
         ActivateEmploymentRequest request, ActivateEmploymentHandler handler, CancellationToken cancellationToken)
     {
         var result = await handler.HandleAsync(
-            request.OfferId, request.WorkerReference, request.StartDate, cancellationToken).ConfigureAwait(false);
+            clientId,
+            request.OfferId,
+            request.WorkerReference,
+            request.StartDate,
+            cancellationToken).ConfigureAwait(false);
         var response = ToResponse(result.Employment);
         return result.Created
             ? TypedResults.Created($"/api/v1/clients/{result.Employment.ClientId}/employments/{response.Id:D}", response)

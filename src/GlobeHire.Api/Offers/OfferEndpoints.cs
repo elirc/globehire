@@ -18,14 +18,15 @@ internal static class OfferEndpoints
     }
 
     private static async Task<IResult> CreateAsync(
+        string clientId,
         CreateOfferRequest request, OfferHandler handler, HttpContext context, CancellationToken cancellationToken)
     {
-        var offer = await handler.CreateAsync(request.HireCaseId, cancellationToken).ConfigureAwait(false);
+        var offer = await handler.CreateAsync(clientId, request.HireCaseId, cancellationToken).ConfigureAwait(false);
         return Respond(offer, context, created: true);
     }
 
     private static async Task<IResult> ApproveAsync(
-        Guid id, ApproveOfferRequest request, [FromHeader(Name = "If-Match")] string? ifMatch,
+        string clientId, Guid id, ApproveOfferRequest request, [FromHeader(Name = "If-Match")] string? ifMatch,
         OfferHandler handler, HttpContext context, CancellationToken cancellationToken)
     {
         if (!Enum.TryParse<ApprovalRole>(request.Role, true, out var role))
@@ -33,15 +34,17 @@ internal static class OfferEndpoints
             throw new BusinessRuleViolationException("approval.role_invalid", "Approval role is invalid.");
         }
 
-        var offer = await handler.ApproveAsync(id, role, request.ActorId, Version(ifMatch), cancellationToken).ConfigureAwait(false);
+        var offer = await handler.ApproveAsync(
+            clientId, id, role, request.ActorId, Version(ifMatch), cancellationToken).ConfigureAwait(false);
         return Respond(offer, context);
     }
 
     private static async Task<IResult> IssueAsync(
-        Guid id, IssueContractRequest request, [FromHeader(Name = "If-Match")] string? ifMatch,
+        string clientId, Guid id, IssueContractRequest request, [FromHeader(Name = "If-Match")] string? ifMatch,
         OfferHandler handler, HttpContext context, CancellationToken cancellationToken)
     {
-        var offer = await handler.IssueAsync(id, request.TemplateKey, Version(ifMatch), cancellationToken).ConfigureAwait(false);
+        var offer = await handler.IssueAsync(
+            clientId, id, request.TemplateKey, Version(ifMatch), cancellationToken).ConfigureAwait(false);
         return Respond(offer, context);
     }
 
