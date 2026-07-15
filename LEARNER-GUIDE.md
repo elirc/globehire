@@ -10,6 +10,8 @@ Study each sprint as a decision trail rather than reading only the final code.
 6. Run the focused test, alter one invariant, and make the failure explain the business risk.
 7. Complete the sprint exercises without changing public contracts accidentally.
 
+After Sprint 15, read the [flaw harvest](docs/quality/FLAW-HARVEST.md), [over-engineering review](OEReadMe.md), and [retrospective](docs/curriculum/RETROSPECTIVE.md) together. For each choice, separate business complexity from framework complexity and curriculum ceremony from product delivery.
+
 ## Review questions
 
 - Which business fact must always remain true?
@@ -19,3 +21,5 @@ Study each sprint as a decision trail rather than reading only the final code.
 - Can a retry duplicate money, state transitions, audit records, or integration messages?
 - What is the narrowest interface that lets another system integrate safely?
 - Which tests would survive replacing ASP.NET Core, EF Core, or an external provider?
+- Which abstraction has at least two real consumers or implementations, and which exists only for a hypothetical future?
+- What evidence is still missing before an operational or production claim is honest?

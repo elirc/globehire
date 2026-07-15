@@ -12,9 +12,24 @@ Include health/readiness, structured events, trace propagation, SLO candidates, 
 
 Operability, evidence scopes, release communication, recovery objectives, privacy-aware telemetry, and deciding what remains deployment-owned.
 
-## Planned artifacts
+## Delivered artifacts
 
-Seed command, runbooks, postmortem, release checklist, flaw ledger, retrospective, ADR, and operations note.
+- liveness/readiness responses and trace propagation with API tests;
+- an operational runbook and simulated duplicate-webhook incident;
+- an integration guide and explicit production-readiness assessment;
+- ADR 0002 recording why `v1.0.0` is curriculum-complete but not production-ready;
+- the revealed five-flaw harvest with regression evidence;
+- an over-engineering review, expanded junior testing guide, changelog, and course retrospective.
+
+Deterministic test fixtures remain the seed data for this in-memory build. A mutable demo seed command was intentionally not added because it would imply durable environment lifecycle support that the executable system does not have.
+
+## Evidence
+
+- `/health/live` reports process liveness;
+- `/health/ready` reports ready while disclosing `durable: false` and `storage: in-memory`;
+- every HTTP response carries `X-Trace-Id` for correlation;
+- CI performs locked restore, formatting, Release build, all test suites, dependency audit, and history secret scan;
+- [the readiness assessment](../quality/PRODUCTION-READINESS.md) lists real-deployment blockers rather than hiding them.
 
 ## Exercises
 
