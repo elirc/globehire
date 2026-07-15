@@ -19,3 +19,11 @@ Fake contract provider, shared adapter tests, approval API, ADR, and integration
 ## Exercises
 
 Add a second provider without changing application logic. Inject a timeout after provider acceptance and design safe reconciliation.
+
+## Delivered evidence
+
+- Finance and legal approval evidence is modeled with role, actor, and timestamp.
+- Separation of duties prevents one actor from satisfying both required roles.
+- Contract issuance before approval fails; successful issuance records template and revision metadata.
+- Offer commands use expected versions and expose ETags through the API.
+- Tests focus on illegal issuance, actor separation, and the complete approval-to-contract transition.

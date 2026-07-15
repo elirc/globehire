@@ -88,6 +88,7 @@ public sealed class WorkforcePlanApiTests : IClassFixture<WebApplicationFactory<
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Contains("/api/v1/clients/{clientId}/workforce-plans", document, StringComparison.Ordinal);
+        Assert.Contains("/api/v1/clients/{clientId}/offers", document, StringComparison.Ordinal);
     }
 
     private static HttpRequestMessage CreateRequest(string clientId, string idempotencyKey)
