@@ -3,6 +3,7 @@ using GlobeHire.Api.Employments;
 using GlobeHire.Api.EmploymentLifecycle;
 using GlobeHire.Api.Contractors;
 using GlobeHire.Api.HireCases;
+using GlobeHire.Api.Integrations;
 using GlobeHire.Api.Offers;
 using GlobeHire.Api.Payroll;
 using GlobeHire.Api.PeopleOperations;
@@ -61,6 +62,7 @@ app.MapPayrollEndpoints();
 app.MapPeopleOperationsEndpoints();
 app.MapContractorEndpoints();
 app.MapEmploymentLifecycleEndpoints();
+app.MapIntegrationEndpoints();
 
 app.Run();
 
