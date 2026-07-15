@@ -18,6 +18,18 @@ public readonly record struct WorkforcePlanId
         return new WorkforcePlanId(value);
     }
 
+    public static WorkforcePlanId Parse(string? value)
+    {
+        if (!TryParse(value, out var id))
+        {
+            throw new BusinessRuleViolationException(
+                "workforce_plan.id_invalid",
+                "Workforce plan ID must be a non-empty GUID.");
+        }
+
+        return id;
+    }
+
     public static bool TryParse(string? value, out WorkforcePlanId id)
     {
         if (Guid.TryParse(value, out var parsed) && parsed != Guid.Empty)
