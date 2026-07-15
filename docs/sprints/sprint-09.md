@@ -18,4 +18,14 @@ Timeline tests, amendment/offboarding APIs, ADR, and temporal-workflow note.
 
 ## Exercises
 
+## Delivered evidence
+
+- Employment changes preserve type, reason, effective date, and transition status.
+- Approved changes cannot apply before their effective date.
+- Applied changes cannot be cancelled or rewritten.
+- Offboarding readiness requires final pay, access revocation, and document evidence.
+- An API validation contract exposes the temporal rules to integrators.
+
+## Exercises
+
 Resolve two future amendments that target the same property. Design cancellation after one external step completed.
