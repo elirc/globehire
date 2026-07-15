@@ -18,4 +18,13 @@ Assessment/invoice tests, contractor API, payment fake, ADR, and explainable-pol
 
 ## Exercises
 
+## Delivered evidence
+
+- Contractor activation requires signed-agreement and classification-review evidence.
+- Invoice approval, dispute, and payment use explicit legal transitions.
+- Disputes require reasons and payment requires prior approval.
+- The API validates invoice contracts without coupling clients to the aggregate.
+
+## Exercises
+
 Add a new risk signal without changing historical assessments. Retry payment intent creation safely.
