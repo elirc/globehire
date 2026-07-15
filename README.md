@@ -46,7 +46,7 @@ dotnet restore GlobeHire.slnx --locked-mode
 dotnet run --project src/GlobeHire.Api
 ```
 
-Use [the HTTP examples](src/GlobeHire.Api/GlobeHire.Api.http) to create and replay a workforce plan or inspect `/openapi/v1.json`. Then run the complete suite:
+Use [the HTTP examples](src/GlobeHire.Api/GlobeHire.Api.http) to create and replay a country-aware workforce plan or inspect `/openapi/v1.json`. Responses include effective policy identity, itemized employer cost, and assumptions. Then run the complete suite:
 
 ```powershell
 dotnet test GlobeHire.slnx
