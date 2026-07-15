@@ -18,4 +18,13 @@ Rule matrices, APIs, fake FX/carrier adapters, ADR, and policy-composition note.
 
 ## Exercises
 
+## Delivered evidence
+
+- Leave approvals cannot exceed the available entitlement ledger.
+- Expense claims use explicit submitted/approved/rejected states.
+- Rejections require a decision reason and repeated decisions are rejected.
+- Focused domain tests protect balance and evidence rules.
+
+## Exercises
+
 Add a half-day leave unit. Model a late expense that belongs to an adjustment period.
