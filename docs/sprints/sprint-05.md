@@ -19,3 +19,11 @@ Onboarding/activation tests, MVP walkthrough, threat-model start, ADR, and priva
 ## Exercises
 
 Make one task conditionally required by policy. Prove repeated activation returns the same employment identity.
+
+## Delivered evidence
+
+- Activation requires an issued contract and a non-past effective start date.
+- Employment preserves immutable offer and contract provenance.
+- Replaying activation for one offer returns the existing employment.
+- The API publishes an additive v1 activation contract through OpenAPI.
+- The MVP spans planning, onboarding, approvals, contract issuance, and active employment.
