@@ -1,6 +1,8 @@
 using GlobeHire.Application.Abstractions;
 using GlobeHire.Application.WorkforcePlans;
 using GlobeHire.Infrastructure.WorkforcePlans;
+using GlobeHire.Domain.Common;
+using GlobeHire.Domain.WorkforcePlans;
 
 namespace GlobeHire.Application.Tests.WorkforcePlans;
 
@@ -58,7 +60,7 @@ public sealed class CreateWorkforcePlanHandlerTests
             _repository,
             _clock,
             idGenerator ?? new QueueIdGenerator(FirstId, Guid.NewGuid()),
-            new WorkforcePlanPricingOptions { MonthlyServiceFee = 500m });
+            new StubCountryPolicyRepository());
 
     private static CreateWorkforcePlanCommand ValidCommand(string clientId, string idempotencyKey) =>
         new(
@@ -82,5 +84,27 @@ public sealed class CreateWorkforcePlanHandlerTests
         private readonly Queue<Guid> _ids = new(ids);
 
         public Guid NewId() => _ids.Dequeue();
+    }
+
+    private sealed class StubCountryPolicyRepository : ICountryPolicyRepository
+    {
+        public Task<IReadOnlyList<CountryEmploymentPolicy>> ListAsync(
+            CountryCode country,
+            CancellationToken cancellationToken)
+        {
+            IReadOnlyList<CountryEmploymentPolicy> policies =
+            [
+                new(
+                    $"{country}-test",
+                    country,
+                    new DateOnly(2026, 1, 1),
+                    null,
+                    "USD",
+                    0.12m,
+                    500m,
+                    ["Test fixture"]),
+            ];
+            return Task.FromResult(policies);
+        }
     }
 }
