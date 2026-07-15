@@ -1,0 +1,30 @@
+@GlobeHire_HostAddress = http://localhost:5077
+
+### Create a workforce plan
+POST {{GlobeHire_HostAddress}}/api/v1/clients/client-acme/workforce-plans
+Content-Type: application/json
+Idempotency-Key: demo-request-0001
+
+{
+  "roleTitle": "Senior Software Engineer",
+  "countryCode": "US",
+  "proposedStartDate": "2099-08-01",
+  "annualCompensation": 120000,
+  "currency": "USD"
+}
+
+### Replay the same request: 200 with the original plan, not a duplicate
+POST {{GlobeHire_HostAddress}}/api/v1/clients/client-acme/workforce-plans
+Content-Type: application/json
+Idempotency-Key: demo-request-0001
+
+{
+  "roleTitle": "Senior Software Engineer",
+  "countryCode": "US",
+  "proposedStartDate": "2099-08-01",
+  "annualCompensation": 120000,
+  "currency": "USD"
+}
+
+### OpenAPI contract
+GET {{GlobeHire_HostAddress}}/openapi/v1.json

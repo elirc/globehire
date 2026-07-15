@@ -16,6 +16,25 @@ Dependency direction, thin endpoints, explicit mapping, validation placement, an
 
 Domain and API tests, architecture guard, OpenAPI snapshot, integration example, ADR, concept note, and HTTP examples.
 
+## Delivered evidence
+
+- `POST /api/v1/clients/{clientId}/workforce-plans` returns `201 Created`; replaying the same tenant-scoped idempotency key returns the original resource with `200 OK`.
+- `GET /api/v1/clients/{clientId}/workforce-plans/{planId}` proves tenant-scoped retrieval.
+- Quotes use explicit two-decimal, midpoint-away-from-zero money arithmetic and reject cross-currency addition.
+- Business failures use `422` Problem Details with a stable `code` and request `traceId`.
+- OpenAPI, ETags, locked dependencies, vulnerability auditing, and four test levels establish the integration baseline.
+- ADR 0001 records why the project begins as a modular monolith without mediator, mapper, or generic-repository frameworks.
+
+## Verification
+
+```powershell
+dotnet restore GlobeHire.slnx --locked-mode
+dotnet format GlobeHire.slnx --verify-no-changes --no-restore
+dotnet build GlobeHire.slnx --configuration Release --no-restore
+dotnet test GlobeHire.slnx --configuration Release --no-build
+dotnet list GlobeHire.slnx package --vulnerable --include-transitive
+```
+
 ## Exercises
 
 Add a new planning field without leaking the domain type into the contract. Replace the repository with a file adapter using the same contract suite.
