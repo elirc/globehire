@@ -62,11 +62,11 @@ app.MapGet("/health/live", () => Results.Ok(new { status = "healthy" }))
     .WithName("Liveness")
     .ExcludeFromDescription();
 app.MapGet("/health/ready", () => Results.Ok(new
-    {
-        status = "ready",
-        storage = "in-memory",
-        durable = false,
-    }))
+{
+    status = "ready",
+    storage = "in-memory",
+    durable = false,
+}))
     .WithName("Readiness")
     .ExcludeFromDescription();
 app.MapWorkforcePlanEndpoints();
