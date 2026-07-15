@@ -18,4 +18,14 @@ Import property tests, query API, benchmark evidence, ADR, and bulk-boundary not
 
 ## Exercises
 
+## Delivered evidence
+
+- Bulk batches are bounded to 1,000 rows and preserve ordered row-level outcomes.
+- Duplicate external keys, malformed country codes, and invalid money return stable codes.
+- Valid rows remain distinguishable when neighboring rows fail.
+- Report contracts enforce bounded page size and opaque cursor semantics.
+- API endpoints expose validation and paged read-model boundaries.
+
+## Exercises
+
 Resume an interrupted import. Add a projection without coupling it to aggregate persistence.
