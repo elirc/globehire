@@ -48,7 +48,15 @@ public sealed class WorkforcePlanTests
             CountryCode.Parse("us"),
             startDate,
             Money.Of(120_000, "USD"),
-            Money.Of(500, "USD"),
+            new CountryEmploymentPolicy(
+                "US-test",
+                CountryCode.Parse("US"),
+                new DateOnly(2026, 1, 1),
+                null,
+                "USD",
+                0.12m,
+                500m,
+                ["Test fixture"]),
             Today,
             Now);
 }
