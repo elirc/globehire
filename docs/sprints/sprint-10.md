@@ -18,4 +18,14 @@ Authorization matrix, cross-tenant tests, fake identity adapter, ADR, and object
 
 ## Exercises
 
+## Delivered evidence
+
+- Hire-case and offer repository ports require tenant context for every lookup.
+- In-memory adapters use composite tenant/resource keys.
+- Offer creation, approval, contract issue, and employment activation propagate the route tenant.
+- A cross-tenant API test proves a known hire-case ID returns `404` to another client.
+- The threat model distinguishes route scoping from real authentication and role authorization.
+
+## Exercises
+
 Add a country-scoped payroll operator. Attempt to bypass endpoint checks through a repository lookup.

@@ -28,6 +28,10 @@ public sealed class HireCaseApiTests : IClassFixture<WebApplicationFactory<Progr
         Assert.NotNull(hireCase);
         Assert.Equal("ada@example.com", hireCase.CandidateEmail);
 
+        var crossTenantResponse = await _client.GetAsync(
+            $"/api/v1/clients/client-other/hire-cases/{hireCase.Id:D}");
+        Assert.Equal(HttpStatusCode.NotFound, crossTenantResponse.StatusCode);
+
         foreach (var task in hireCase.Tasks)
         {
             using var complete = new HttpRequestMessage(
