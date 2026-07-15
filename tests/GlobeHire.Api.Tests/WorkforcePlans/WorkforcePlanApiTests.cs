@@ -29,14 +29,20 @@ public sealed class WorkforcePlanApiTests : IClassFixture<WebApplicationFactory<
         Assert.NotNull(created);
         Assert.NotNull(createResponse.Headers.Location);
         Assert.Equal("US", created.CountryCode);
-        Assert.Equal(10_500m, created.Quote.EstimatedMonthlyTotal.Amount);
+        Assert.Equal("US-2026.1", created.Quote.PolicyId);
+        Assert.Equal(1_200m, created.Quote.MonthlyEmployerContributions.Amount);
+        Assert.Equal(11_700m, created.Quote.EstimatedMonthlyTotal.Amount);
+        Assert.NotEmpty(created.Quote.Assumptions);
         Assert.Equal("\"1\"", createResponse.Headers.ETag?.Tag);
 
         var getResponse = await _client.GetAsync(createResponse.Headers.Location);
         var retrieved = await getResponse.Content.ReadFromJsonAsync<WorkforcePlanResponse>();
 
         Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
-        Assert.Equal(created, retrieved);
+        Assert.NotNull(retrieved);
+        Assert.Equal(created.Id, retrieved.Id);
+        Assert.Equal(created.Quote.EstimatedMonthlyTotal, retrieved.Quote.EstimatedMonthlyTotal);
+        Assert.Equal(created.Quote.Assumptions, retrieved.Quote.Assumptions);
     }
 
     [Fact]
