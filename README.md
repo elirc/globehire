@@ -1,59 +1,80 @@
 # GlobeHire
 
-GlobeHire is an original C#/.NET teaching implementation of a global workforce and employer-of-record platform. It is inspired by publicly described EOR workflows—international hiring, compliant contracts, payroll, benefits, leave, expenses, contractor management, immigration cases, lifecycle changes, and integrations—without copying Pebl/Velocity Global code, private behavior, wording, assets, or branding.
+GlobeHire is a complete fifteen-sprint C#/.NET teaching repository for a fictional global workforce and employer-of-record platform. It focuses on changeable business logic, versioned API design, integration boundaries, and the engineering judgment a junior developer needs to grow.
 
-The repository is the curriculum. A junior engineer studies fifteen sequential sprint pull requests, stakeholder issues, ordered commits, review discussions, ADRs, business-rule tests, API contracts, and five deliberately planted-then-repaired flaws.
+It is an original educational project inspired by publicly described industry workflows. It does not copy Pebl/Velocity Global code, private behavior, wording, assets, or branding, and it is not affiliated with or endorsed by those companies.
 
-## Engineering focus
+## What you will learn
 
-- business rules modeled independently of ASP.NET Core, EF Core, and transport DTOs;
-- thin HTTP endpoints with versioned contracts, OpenAPI, and RFC 9457-style Problem Details;
-- explicit use-case services instead of framework-driven business logic;
-- effective-dated country policies, money/currency invariants, approvals, and lifecycle state machines;
-- tenant isolation, audit records, idempotency, transactional outbox, webhooks, and import/export boundaries;
-- adapter contract tests so persistence and external providers can be replaced safely;
-- modular-monolith deployment with seams for later extraction, not premature microservices.
+- model money, dates, policies, approvals, and lifecycle state machines independently of ASP.NET Core;
+- keep HTTP contracts versioned and separate from domain and persistence shapes;
+- design tenant-bound ports, idempotency, optimistic concurrency, outbox/webhook identities, and partial-failure results;
+- test business risk at the lowest useful level, then sample public wiring through the API;
+- recognize when architecture helps change and when ceremony becomes over-engineering;
+- distinguish a green build from honest production readiness.
 
-## Architecture direction
+## Architecture
 
 ```text
 HTTP / OpenAPI contracts
           |
           v
-Application use cases -----> ports for persistence, clock, identity, events
+Application use cases -----> persistence, time, identity, and event ports
           |
           v
 Domain aggregates, policies, value objects, and events
           ^
           |
-Infrastructure adapters (in-memory first, EF/provider adapters later)
+Infrastructure adapters (in-memory teaching adapters today)
 ```
 
-Dependencies point inward. The domain has no ASP.NET Core, EF Core, serialization, or provider dependency. The API maps contracts explicitly and does not expose persistence models.
+Dependencies point inward. The domain has no ASP.NET Core, EF Core, serialization, or provider dependency. The API maps contracts explicitly. This is a modular monolith with seams for proven integration needs, not premature microservices.
 
-## Deliberate non-choices
+## Course map
 
-GlobeHire starts without microservices, MediatR, AutoMapper, a generic repository, an enterprise service bus, or a custom “framework.” Each would add indirection before a concrete change or integration requires it.
+| Sprint | Outcome | Evidence |
+| --- | --- | --- |
+| 1 | Workforce-plan vertical slice | [notes](docs/sprints/sprint-01.md) |
+| 2 | Effective-dated country estimates | [notes](docs/sprints/sprint-02.md) |
+| 3 | Hire-case state machine | [notes](docs/sprints/sprint-03.md) |
+| 4 | Offers, approvals, contracts | [notes](docs/sprints/sprint-04.md) |
+| 5 | Onboarding and activation (`v0.5.0`) | [notes](docs/sprints/sprint-05.md) |
+| 6 | Payroll rules and statements | [notes](docs/sprints/sprint-06.md) |
+| 7 | Leave, expenses, benefits | [notes](docs/sprints/sprint-07.md) |
+| 8 | Contractors and invoices | [notes](docs/sprints/sprint-08.md) |
+| 9 | Employment changes and offboarding | [notes](docs/sprints/sprint-09.md) |
+| 10 | Tenant/IDOR hardening | [notes](docs/sprints/sprint-10.md) |
+| 11 | Outbox and webhooks | [notes](docs/sprints/sprint-11.md) |
+| 12 | Bulk validation and reporting | [notes](docs/sprints/sprint-12.md) |
+| 13 | Compliance evidence | [notes](docs/sprints/sprint-13.md) |
+| 14 | Five-flaw harvest | [notes](docs/sprints/sprint-14.md) |
+| 15 | Operations and retrospective (`v1.0.0`) | [notes](docs/sprints/sprint-15.md) |
 
-Read [the learner guide](LEARNER-GUIDE.md), [product and curriculum specification](docs/curriculum/SPEC.md), and [contribution workflow](CONTRIBUTING.md) before Sprint 1.
+Study the milestones, issues, ordered commits, and review comments as part of the curriculum. Start with the [learner guide](LEARNER-GUIDE.md) and [product specification](docs/curriculum/SPEC.md).
 
-## Run Sprint 1
+## Run it
 
-The first vertical slice requires the .NET 10 SDK pinned in `global.json`.
+The repository pins the .NET 10 SDK in `global.json`.
 
 ```powershell
 dotnet restore GlobeHire.slnx --locked-mode
 dotnet run --project src/GlobeHire.Api
 ```
 
-Use [the HTTP examples](src/GlobeHire.Api/GlobeHire.Api.http) to create and replay a country-aware workforce plan or inspect `/openapi/v1.json`. Responses include effective policy identity, itemized employer cost, and assumptions. Then run the complete suite:
+Use [the HTTP examples](src/GlobeHire.Api/GlobeHire.Api.http), inspect `/openapi/v1.json` in Development, and check `/health/live` and `/health/ready`. The readiness response intentionally discloses that storage is in-memory and non-durable.
+
+Run all four test suites:
 
 ```powershell
-dotnet test GlobeHire.slnx
+dotnet test GlobeHire.slnx --configuration Release
 ```
 
-See [the testing guide](TESTREADME.md), [Sprint 1 evidence](docs/sprints/sprint-01.md), and [ADR 0001](docs/adr/ADR-0001-modular-monolith-and-explicit-boundaries.md) for the reasoning behind the implementation.
+Read [TESTREADME](TESTREADME.md) for the reasoning behind the tests, [OEReadMe](OEReadMe.md) for the requested over-engineering assessment, and the [production-readiness assessment](docs/quality/PRODUCTION-READINESS.md) before extending the service.
+
+## Deliberate non-choices
+
+GlobeHire does not add MediatR, AutoMapper, a generic repository, microservices, an enterprise bus, or a custom framework. Each adds indirection before this code has evidence that it would improve changeability.
 
 ## Attribution and limits
 
-Pebl and Velocity Global are trademarks of their owners. GlobeHire is an independent educational project and is not affiliated with or endorsed by them. Country rules, payroll calculations, tax treatment, benefits, immigration, and legal templates in this repository are fictional teaching fixtures—not legal, tax, payroll, or employment advice.
+Country rules, payroll calculations, tax treatment, benefits, immigration, and legal templates are fictional teaching fixtures, not legal, tax, payroll, employment, or security advice. The service uses volatile in-memory storage and has no real authentication. `v1.0.0` means the curriculum is complete, not that the software is deployable for real workers.

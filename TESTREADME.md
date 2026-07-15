@@ -1,47 +1,70 @@
-# Testing guide for a growing .NET system
+# Why GlobeHire has tests
 
-GlobeHire uses tests to make business decisions and integration promises safe to change. The goal is not maximum line coverage. A useful test explains a risk, fails for the right reason, and gives a maintainer enough confidence to refactor.
+Tests were added so a junior software engineer can change complicated business logic without relying on hope or manual clicking. In workforce software, a one-cent rounding error, a date boundary, a cross-tenant lookup, a duplicate retry, or a lost concurrent update can have serious consequences. A good test names that risk and proves the behavior another developer may safely depend on.
+
+The goal is not 100% line coverage. The goal is useful evidence: a test should fail for the right reason, remain deterministic, and give a maintainer confidence to refactor.
 
 ## The test portfolio
 
-| Suite | What it protects | Examples |
+| Suite | What it protects | Example risks |
 | --- | --- | --- |
-| Domain unit tests | Dense rules with no framework or I/O | rounding, currency mismatch, quote totals, start-date invariants |
-| Application tests | Use-case orchestration across ports | idempotent replay, tenant scoping, deterministic time and IDs |
-| API integration tests | Behavior visible to another system | status codes, headers, Problem Details, JSON contracts, OpenAPI paths |
-| Architecture tests | A few critical dependency constraints | domain independence, contract independence, inward dependencies |
+| Domain unit tests | Dense rules without framework or I/O | exact money allocation, effective dates, invalid transitions, stable retry identity |
+| Application tests | Use-case orchestration across ports | idempotent replay, controlled time/IDs, atomic expected-version mutation |
+| API integration tests | Behavior another system observes | routes, JSON, Problem Details, headers, OpenAPI, health, tenant information hiding |
+| Architecture tests | A few expensive-to-break dependency rules | framework-free domain, isolated contracts, inward project references |
 
-Most business permutations belong in fast domain tests. Do not repeat every one through HTTP. API tests should sample the wiring and public contract risks that unit tests cannot see.
+Most permutations belong in fast domain tests. Do not repeat every rule through HTTP. Use an API test when routing, serialization, middleware, dependency wiring, or a public compatibility promise creates a distinct risk.
 
-## Good testing habits
+## A junior-friendly workflow
 
-1. Name the behavior and outcome. `Handle_SameTenantAndKey_ReturnsOriginalPlanWithoutDuplicate` tells a future reader why the test exists.
-2. Arrange only what matters. Fixed clocks and queued IDs expose nondeterminism instead of hiding it behind arbitrary waits.
-3. Assert observable behavior. Avoid checking private methods or reproducing the implementation inside the test.
-4. Test boundaries for failures as well as success. Stable error codes are safer integration contracts than matching prose.
-5. Make tenant isolation explicit. Multi-tenant lookup tests should attempt the cross-tenant access that must fail.
-6. Keep tests deterministic. Never depend on test order, the machine's local timezone, live external services, or random values whose value affects the assertion.
+1. Describe the behavior in the test name: `Retry_PreservesDeliveryIdentityAndIncrementsAttempt` is more useful than `RetryTest`.
+2. Arrange only relevant facts. Use fixed dates, fixed clocks, and known identifiers; avoid arbitrary delays and random values that affect assertions.
+3. Act once when possible. A transition test is easiest to understand when one command causes one visible outcome.
+4. Assert public behavior: returned value, state, emitted identity, error code, or persisted version. Do not test private methods.
+5. Make the test fail before implementing a bug fix. A red counterexample proves that the test can detect the defect.
+6. Implement the smallest correction, run the focused test, then the suite.
+7. Refactor while green. If the test prevents an internal rename that does not change behavior, it is coupled too tightly.
+
+This is Arrange–Act–Assert in practical terms, but clarity matters more than comments that label the sections.
+
+## What the regressions teach
+
+- Money allocation asserts that every cent is conserved, not merely that individual results look plausible.
+- Effective policies use half-open ranges so adjacent versions cannot both own the boundary day.
+- Tenant tests attempt access using a real foreign resource ID and expect `404`; a happy-path test cannot prove isolation.
+- Concurrency starts two writers against one expected version and proves exactly one commits.
+- Webhook retry retains stable delivery/message IDs, because a new ID defeats consumer deduplication.
+- Health tests verify both operational status and the honest declaration that current storage is not durable.
 
 ## Common traps
 
-- **Mocking every class:** this freezes implementation structure and can let broken wiring pass. Prefer real domain objects and small in-memory adapters.
-- **Only happy-path HTTP tests:** serialization, error mapping, idempotency, and authorization failures are where integrations often break.
-- **Chasing 100% coverage:** trivial getters can inflate the number while important state transitions remain untested.
-- **Huge end-to-end suites:** they are slow to diagnose. Use the lowest test level that can prove the risk.
-- **Snapshotting everything:** snapshots can conceal meaningful contract changes in large diffs. Use focused assertions, and reserve snapshots for deliberately reviewed schemas.
+- **Mock every class:** this freezes implementation structure and can let broken wiring pass. Prefer real domain objects and small in-memory ports.
+- **Only test happy paths:** failures, boundaries, retries, and conflicting writers carry much of the business risk.
+- **Copy implementation logic into the assertion:** two copies can share the same mistake. Assert invariants and independently known examples.
+- **Depend on test order, local time, or a live service:** the suite becomes flaky and teaches the team to ignore failures.
+- **Chase a coverage percentage:** trivial lines can inflate a score while an important transition has no counterexample.
+- **Build one huge end-to-end suite:** failures become slow and hard to locate. Use the lowest layer that can prove the risk.
+- **Snapshot everything:** large snapshots hide meaningful compatibility changes. Prefer focused assertions unless the whole schema is deliberately under review.
 
-## Run the tests
+## Add a test for a new change
+
+Ask: “What could be wrong even if the code compiles?” Put the first test at the layer that owns that answer. Add a higher-level test only for a new boundary—for example, a domain test proves a rule code and one API test proves that the code becomes Problem Details. Include at least one boundary or invalid example for non-trivial business logic.
+
+When a test fails in CI, read the first meaningful failure, reproduce it with the focused project or class, and do not solve nondeterminism by adding retries. Fix the product, fixture, or test boundary that made the result unreliable.
+
+## Commands
 
 ```powershell
 dotnet restore GlobeHire.slnx --locked-mode
 dotnet test GlobeHire.slnx --configuration Release
+dotnet test tests/GlobeHire.Domain.Tests --filter FullyQualifiedName~MoneyAllocator
 ```
 
-Before opening a pull request, also run formatting and dependency checks:
+Before a pull request, CI also verifies formatting, a Release build, transitive dependency vulnerabilities, and secrets. Run these locally when the platform's line-ending behavior matches CI:
 
 ```powershell
 dotnet format GlobeHire.slnx --verify-no-changes --no-restore
 dotnet list GlobeHire.slnx package --vulnerable --include-transitive
 ```
 
-When adding a feature, start by writing the smallest test that expresses the new rule or public promise. Then implement it, refactor while green, and add a higher-level test only if another boundary introduces a distinct risk.
+Treat every test as maintained production code: readable names, little duplication, no hidden network, and a clear reason to exist.
