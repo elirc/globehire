@@ -5,6 +5,7 @@ using GlobeHire.Api.Contractors;
 using GlobeHire.Api.Compliance;
 using GlobeHire.Api.BulkData;
 using GlobeHire.Api.HireCases;
+using GlobeHire.Api.Identity;
 using GlobeHire.Api.Integrations;
 using GlobeHire.Api.Offers;
 using GlobeHire.Api.Payroll;
@@ -28,6 +29,8 @@ builder.Services.AddOpenApi();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IRequestActor, GatewayRequestActor>();
 builder.Services.AddSingleton<IClock, SystemClock>();
 builder.Services.AddSingleton<IIdGenerator, GuidIdGenerator>();
 builder.Services.AddSingleton<InMemoryWorkforcePlanRepository>();

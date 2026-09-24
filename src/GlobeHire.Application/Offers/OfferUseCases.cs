@@ -20,7 +20,8 @@ public sealed class OfferHandler(
     IHireCaseRepository hireCases,
     IOfferRepository offers,
     IIdGenerator ids,
-    IClock clock)
+    IClock clock,
+    IRequestActor requestActor)
 {
     public async Task<EmploymentOffer> CreateAsync(
         string clientIdValue,
@@ -38,10 +39,12 @@ public sealed class OfferHandler(
     public async Task<EmploymentOffer?> ApproveAsync(
         string clientId, Guid id, ApprovalRole role, string actorId, int version, CancellationToken cancellationToken)
     {
+        // Prefer the gateway-authenticated actor; the body field stays for clients that have not migrated yet.
+        var approver = requestActor.ActorId ?? actorId;
         return await offers.MutateAsync(
             ClientId.Parse(clientId),
             id,
-            offer => offer.Approve(role, actorId, version, clock.UtcNow),
+            offer => offer.Approve(role, approver, version, clock.UtcNow),
             cancellationToken).ConfigureAwait(false);
     }
 
