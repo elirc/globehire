@@ -54,7 +54,7 @@ public sealed class CreateWorkforcePlanHandler
             command.ProposedStartDate,
             annualCompensation,
             policy,
-            _clock.Today,
+            _clock.TodayIn(country),
             _clock.UtcNow);
 
         var stored = await _repository.AddOrGetAsync(plan, cancellationToken).ConfigureAwait(false);
