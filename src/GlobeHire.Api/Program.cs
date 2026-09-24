@@ -37,12 +37,13 @@ builder.Services.AddSingleton<ICountryPolicyRepository, InMemoryCountryPolicyRep
 builder.Services.AddSingleton<IHireCaseRepository, InMemoryHireCaseRepository>();
 builder.Services.AddSingleton<IOfferRepository, InMemoryOfferRepository>();
 builder.Services.AddSingleton<IEmploymentRepository, InMemoryEmploymentRepository>();
-builder.Services.AddScoped<CreateWorkforcePlanHandler>();
-builder.Services.AddScoped<GetWorkforcePlanHandler>();
-builder.Services.AddScoped<OpenHireCaseHandler>();
-builder.Services.AddScoped<ChangeHireCaseHandler>();
-builder.Services.AddScoped<OfferHandler>();
-builder.Services.AddScoped<ActivateEmploymentHandler>();
+// Use-case handlers hold no per-request state; singletons avoid six allocations per request.
+builder.Services.AddSingleton<CreateWorkforcePlanHandler>();
+builder.Services.AddSingleton<GetWorkforcePlanHandler>();
+builder.Services.AddSingleton<OpenHireCaseHandler>();
+builder.Services.AddSingleton<ChangeHireCaseHandler>();
+builder.Services.AddSingleton<OfferHandler>();
+builder.Services.AddSingleton<ActivateEmploymentHandler>();
 
 var app = builder.Build();
 
