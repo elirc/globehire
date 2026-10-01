@@ -1,0 +1,24 @@
+{
+  "project": "globehire",
+  "id": "509c3537abdd",
+  "command": [
+    "dotnet",
+    "test",
+    "tests\\GlobeHire.Application.Tests\\GlobeHire.Application.Tests.csproj",
+    "--disable-build-servers",
+    "-m:1"
+  ],
+  "cwd": "C:\\Users\\Owner\\Desktop\\AstraOrganized2\\astra-remaining-improvements\\stage\\509c3537abdd",
+  "environmentOverrides": {
+    "DOTNET_CLI_HOME": "C:\\Users\\Owner\\Desktop\\AstraOrganized2\\astra-remaining-improvements\\dotnet-home",
+    "MSBUILDDISABLENODEREUSE": "1"
+  },
+  "startedAt": "2026-09-19T21:07:25.427398+00:00",
+  "status": "complete",
+  "log": "sol15-globehire-app-tests-r1.log",
+  "pid": 26768,
+  "exitCode": 0,
+  "passed": true,
+  "finishedAt": "2026-09-19T21:12:44.853319+00:00",
+  "elapsedSeconds": 319.42
+}

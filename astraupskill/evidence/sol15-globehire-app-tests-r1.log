@@ -1,0 +1,13 @@
+  Determining projects to restore...
+  Restored C:\Users\Owner\Desktop\AstraOrganized2\astra-remaining-improvements\stage\509c3537abdd\src\GlobeHire.Domain\GlobeHire.Domain.csproj (in 1.33 sec).
+  Restored C:\Users\Owner\Desktop\AstraOrganized2\astra-remaining-improvements\stage\509c3537abdd\src\GlobeHire.Application\GlobeHire.Application.csproj (in 1.61 sec).
+  Restored C:\Users\Owner\Desktop\AstraOrganized2\astra-remaining-improvements\stage\509c3537abdd\src\GlobeHire.Infrastructure\GlobeHire.Infrastructure.csproj (in 1.7 sec).
+  Restored C:\Users\Owner\Desktop\AstraOrganized2\astra-remaining-improvements\stage\509c3537abdd\tests\GlobeHire.Application.Tests\GlobeHire.Application.Tests.csproj (in 28.61 sec).
+  GlobeHire.Domain -> C:\Users\Owner\Desktop\AstraOrganized2\astra-remaining-improvements\stage\509c3537abdd\src\GlobeHire.Domain\bin\Debug\net10.0\GlobeHire.Domain.dll
+  GlobeHire.Application -> C:\Users\Owner\Desktop\AstraOrganized2\astra-remaining-improvements\stage\509c3537abdd\src\GlobeHire.Application\bin\Debug\net10.0\GlobeHire.Application.dll
+  GlobeHire.Infrastructure -> C:\Users\Owner\Desktop\AstraOrganized2\astra-remaining-improvements\stage\509c3537abdd\src\GlobeHire.Infrastructure\bin\Debug\net10.0\GlobeHire.Infrastructure.dll
+  GlobeHire.Application.Tests -> C:\Users\Owner\Desktop\AstraOrganized2\astra-remaining-improvements\stage\509c3537abdd\tests\GlobeHire.Application.Tests\bin\Debug\net10.0\GlobeHire.Application.Tests.dll
+Test run for C:\Users\Owner\Desktop\AstraOrganized2\astra-remaining-improvements\stage\509c3537abdd\tests\GlobeHire.Application.Tests\bin\Debug\net10.0\GlobeHire.Application.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8, Duration: 5 s - GlobeHire.Application.Tests.dll (net10.0)

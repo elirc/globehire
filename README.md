@@ -78,3 +78,7 @@ GlobeHire does not add MediatR, AutoMapper, a generic repository, microservices,
 ## Attribution and limits
 
 Country rules, payroll calculations, tax treatment, benefits, immigration, and legal templates are fictional teaching fixtures, not legal, tax, payroll, employment, or security advice. The service uses volatile in-memory storage and has no real authentication. `v1.0.0` means the curriculum is complete, not that the software is deployable for real workers.
+
+## Source-based improvement course
+
+[Start the course](astraupskill/README.md). The course follows tenant-scoped hire-case mutation, optimistic versions, and UTC audit history.
