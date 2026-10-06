@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased (after v1.0.0)
+
+- Added `HireCaseTenantIsolationTests` (four application-level regressions for cross-client and stale-version hire-case mutation) with the `astraupskill/` lab that explains them.
+- Added `training/` apprenticeship drills; the seeded incident code lives only on the `training/incidents/*` branches.
+- No production source changes since v1.0.0.
+
 ## v1.0.0 — 2026-07-15
 
 - Completed the fifteen-sprint business-logic and API-design curriculum.

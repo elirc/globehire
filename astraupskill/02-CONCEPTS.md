@@ -6,7 +6,7 @@ Optimistic versioning protects a different boundary. A correct tenant can still 
 
 Audit time is an input, not a reason to consult the machine clock throughout domain code. ChangeHireCaseHandler receives IClock and passes UtcNow into CompleteTask. The regression uses a FixedClock so the expected CompletedAt is exact and its offset is zero. A wrong-client attempt never reaches that clocked mutation. A stale attempt reaches the aggregate but fails before assigning a timestamp. Those negative assertions matter as much as the success assertion.
 
-The in-memory lock prevents simultaneous dictionary operations from corrupting the collection, but it is not a substitute for database transactions across processes. Likewise, returning null for another tenant avoids revealing whether the Guid exists, but no authentication is proven. Keep these limits beside the concepts so future changes do not overstate a teaching repository’s guarantees.
+The in-memory lock prevents simultaneous dictionary operations from corrupting the collection, and nothing more. `FindAsync` releases it before returning, so `CompleteTask` and `SubmitForReview` run on the shared aggregate with no lock held. The version check is therefore a check-then-act, not a compare-and-swap. Offers avoid this by mutating inside `InMemoryOfferRepository.MutateAsync`; hire cases do not (see exercise 4). None of it substitutes for database transactions across processes. Likewise, returning null for another tenant avoids revealing whether the Guid exists, but no authentication is proven. Keep these limits beside the concepts so future changes do not overstate a teaching repository’s guarantees.
 
 ## Source excerpt
 

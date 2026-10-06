@@ -25,6 +25,8 @@
 - review discussion includes a genuine trade-off, not a scripted agreement;
 - build, format, analyzers, tests, package audit, and secret scan are green.
 
+> **Status note (October 2026):** this definition of done describes the course's intent. The shipped repository has no adapter contract tests (there is no Infrastructure test project; adapters are exercised through Application and API tests) and no authorization contract beyond tenant-scoped lookups, because the API has no authentication. Treat those two bullets as targets for new work, not as existing coverage.
+
 ## Commit order
 
 Use small, runnable commits that tell the implementation story. Defect harvests preserve a real red test commit immediately before the repair. Do not mix refactors with behavior changes when the separation helps review.

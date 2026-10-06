@@ -13,6 +13,8 @@ The goal is not 100% line coverage. The goal is useful evidence: a test should f
 | API integration tests | Behavior another system observes | routes, JSON, Problem Details, headers, OpenAPI, health, tenant information hiding |
 | Architecture tests | A few expensive-to-break dependency rules | framework-free domain, isolated contracts, inward project references |
 
+As of October 2026 the suite holds 62 test cases: Domain 43 (15 files), Application 8, API 8, Architecture 3. Count them yourself with `git grep -c "\[Fact\]\|\[InlineData" -- tests`; each `[InlineData]` row is one case.
+
 Most permutations belong in fast domain tests. Do not repeat every rule through HTTP. Use an API test when routing, serialization, middleware, dependency wiring, or a public compatibility promise creates a distinct risk.
 
 ## A junior-friendly workflow
@@ -32,7 +34,7 @@ This is Arrange–Act–Assert in practical terms, but clarity matters more than
 - Money allocation asserts that every cent is conserved, not merely that individual results look plausible.
 - Effective policies use half-open ranges so adjacent versions cannot both own the boundary day.
 - Tenant tests attempt access using a real foreign resource ID and expect `404`; a happy-path test cannot prove isolation.
-- Concurrency starts two writers against one expected version and proves exactly one commits.
+- Concurrency starts two writers against one expected version and proves exactly one commits (`OfferConcurrencyTests`). That test covers offers only: hire-case handlers still mutate the aggregate after `FindAsync` releases its lock, and no test races two hire-case writers.
 - Webhook retry retains stable delivery/message IDs, because a new ID defeats consumer deduplication.
 - Health tests verify both operational status and the honest declaration that current storage is not durable.
 

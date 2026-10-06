@@ -1,6 +1,6 @@
 # Testing and debugging the boundary
 
-Run the smallest test project that owns the composition: `dotnet test tests/GlobeHire.Application.Tests/GlobeHire.Application.Tests.csproj --disable-build-servers -m:1`. The repository targets .NET 10 through global.json. The recorded run used SDK 10.0.302, a single MSBuild worker, and disabled node reuse to fit the constrained machine. Eight application tests passed in the recorded scope.
+Run the smallest test project that owns the composition: `dotnet test tests/GlobeHire.Application.Tests/GlobeHire.Application.Tests.csproj --disable-build-servers -m:1`. The repository targets .NET 10 through global.json. The recorded run used SDK 10.0.302, a single MSBuild worker, and disabled build-server reuse to keep memory use low; drop those two flags on a normal machine. Eight application tests passed in the recorded scope (4 tenant-isolation, 3 workforce-plan, 1 offer-concurrency).
 
 When a tenant-isolation test fails, classify the symptom before editing. If the wrong-client result is non-null, inspect the arguments passed by ChangeHireCaseHandler and the key used by InMemoryHireCaseRepository. If the result is null but state changed, a lookup or shared fixture may have exposed the same aggregate through another reference. If the valid completion returns but the timestamp differs, check that the handler passes IClock.UtcNow and that the test injected FixedClock. If stale mutation changes state, inspect the ordering inside CompleteTask: EnsureVersion must run before task replacement.
 

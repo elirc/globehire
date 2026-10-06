@@ -1,14 +1,48 @@
 # Practice: extend the matrix
 
-Before coding, write a prediction table with columns for requested client, expected version, requested action, returned value, final status, final version, and changed task. Populate four rows from the worked tests. Then add two proposed rows without implementation: an unknown Guid under the owner client, and a repeated completion of the already-complete identity task using the current version. Explain which layer decides each outcome.
+Each exercise has a **Goal** and a **Check**. Do the reading exercises with the source open; you do not need to run anything until exercise 5. Answers are in [06-SOLUTIONS-AND-REVIEW](06-SOLUTIONS-AND-REVIEW.md).
 
-Exercise one is a reading task. Trace the client value from the endpoint route to ClientId.Parse and into the dictionary key. Record every location where the value could be lost or replaced. Decide whether a globally unique case ID would make tenant scope unnecessary. Your answer should explain why defense at the repository contract still reduces accidental cross-client reads even when IDs are hard to guess.
+## Exercise 1: route to dictionary key
 
-Exercise two is a state task. Starting at Version 1, list the expected version after each successful checklist completion and after submission. Insert a stale work-eligibility attempt after identity. Predict all task timestamps after the failure. Confirm your prediction against the domain code before running tests.
+**Goal:** trace the `{clientId}` route value from HTTP to the dictionary key, naming every file and line where it is passed, parsed, or used. Then decide whether a globally unique case ID would make tenant scope unnecessary.
 
-Exercise three is a design task. Sketch a durable repository method with the same `FindAsync(ClientId, Guid)` signature. State where an authenticated principal would become a ClientId, how a database query would include both columns, and how an update would compare the expected version. Do not implement a database or authentication provider for this exercise.
+**Check:** your trace names five places: the route group in `HireCaseEndpoints.cs:13`, the handler call in `CompleteTaskAsync`, `ClientId.Parse` in `HireCaseUseCases.cs:58`, `IHireCaseRepository.FindAsync`, and the `(ClientId, Guid)` key at `InMemoryHireCaseRepository.cs:9`. `git grep -n "FindAsync(ClientId.Parse" src` should show the three handler call sites (lines 58, 69, 75); if your trace missed one, read it now.
 
-Exercise four is a review task. Imagine a refactor that adds `FindAsync(Guid id)` for an internal batch job. Write a review comment describing the risk, the safer alternative, and a regression that would expose misuse. Your rubric is specific: reference the handler, repository key, aggregate Version, and the outward not-found behavior. General statements about “security” are insufficient.
+## Exercise 2: version ledger
+
+**Goal:** starting from Version 1, write the version after each of the three task completions and after submission. Then insert a stale `work-eligibility` call with version 1 right after `identity` and predict every task's `IsComplete` and `CompletedAt`.
+
+**Check:** compare against `HireCaseTests.CompleteAllThenSubmit_AdvancesStateAndVersion` (final Version 5) and `HireCaseTenantIsolationTests.CompleteTask_StaleOwnerVersion_PreservesUnchangedTask` (Version stays 2, `work-eligibility` stays incomplete with a null timestamp). Both tests are in `tests/`.
+
+## Exercise 3: the two extra rows
+
+**Goal:** add two rows to the prediction matrix from [03-WORKED-CHANGE](03-WORKED-CHANGE.md): (a) an unknown Guid under `client-acme`; (b) completing `identity` again with the current version (2). For each, predict the return value, final Version, and which layer decides.
+
+**Check:** (a) must give the same outcome as the wrong-client row, because `FindAsync` cannot tell them apart. (b) must not change Version; find the early `return` in `HireCase.cs:99-102` that proves it, and explain why calling with version 1 instead throws.
+
+## Exercise 4: the race the flaw harvest missed
+
+**Goal:** read row 4 of `docs/quality/FLAW-HARVEST.md` ("Approval mutations occurred after an unlocked repository read"). Compare how `OfferHandler.ApproveAsync` mutates an offer with how `ChangeHireCaseHandler.CompleteTaskAsync` mutates a hire case. Decide whether the Sprint 14 fix applies to hire cases.
+
+**Check:** `git grep -n "MutateAsync" src` finds matches in the offer files only. Your answer states where the hire-case lock is released (`InMemoryHireCaseRepository.cs`, end of `FindAsync`) and which two lines then run unlocked (`HireCaseUseCases.cs:58-59`), and describes one interleaving of two requests carrying `If-Match: "1"` that both pass `EnsureVersion`.
+
+## Exercise 5: resubmission
+
+**Goal:** predict what happens when the owner calls `SubmitAsync` a second time, with the current version, on a case that is already `ReadyForReview`. Then write a domain test in `tests/GlobeHire.Domain.Tests/HireCases/HireCaseTests.cs` that pins the behaviour you think is correct.
+
+**Check:** reading `SubmitForReview` (`HireCase.cs:108-120`) shows there is no `Status` guard, so today the call succeeds and Version moves from 5 to 6 with no visible state change. If your test asserts a rejection, it should fail with `dotnet test tests/GlobeHire.Domain.Tests --filter FullyQualifiedName~HireCaseTests`. That red test is the expected outcome here: you have found a missing rule, not broken the build.
+
+## Exercise 6: review an unscoped lookup
+
+**Goal:** imagine a pull request that adds `FindAsync(Guid id)` to `IHireCaseRepository` for an internal batch job. Write the review comment.
+
+**Check:** the comment names the handler that could start calling it, the composite key it bypasses, why the outward 404 would disappear for foreign IDs, a safer alternative (a separate, narrowly named port owned by the batch job), and a regression test that fails if any request path calls the unscoped method. A comment that only says "security risk" does not pass.
+
+## Exercise 7: durable design sketch
+
+**Goal:** sketch, without implementing, a SQL-backed `IHireCaseRepository`.
+
+**Check:** the sketch (1) takes `ClientId` from an authenticated claim, not the route; (2) puts both `client_id` and `id` in every `WHERE`; (3) saves with `UPDATE ... WHERE id = @id AND client_id = @client AND version = @expected`, treating zero affected rows as a conflict; (4) explains why exercise 4's race disappears once that conditional update exists.
 
 ## Source excerpt
 
